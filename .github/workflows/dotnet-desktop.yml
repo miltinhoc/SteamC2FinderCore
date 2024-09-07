@@ -1,0 +1,50 @@
+name: .NET Core Console App - Cross-Platform (Release Only)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+  build:
+    name: ${{ matrix.OS_NAME }} (Release)
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+        - os: ubuntu-latest
+          OS_NAME: Linux x64
+          DOTNET_RUNTIME_IDENTIFIER: linux-x64
+          RELEASE_ZIP_OS_NAME: linux_x64
+
+        - os: macos-latest
+          OS_NAME: macOS x64
+          DOTNET_RUNTIME_IDENTIFIER: osx-x64
+          RELEASE_ZIP_OS_NAME: osx_x64
+
+        - os: windows-latest
+          OS_NAME: Windows x64
+          DOTNET_RUNTIME_IDENTIFIER: win10-x64
+          RELEASE_ZIP_OS_NAME: win_x64
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --no-restore
