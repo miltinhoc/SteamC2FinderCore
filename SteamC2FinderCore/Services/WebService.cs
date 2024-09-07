@@ -21,7 +21,7 @@ namespace SteamC2FinderCore.Services
 
             _httpClient = new HttpClient(_handler);
 
-            AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36");
+            AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/536.36");
         }
 
         public void AddHeader(string key, string value) => _httpClient.DefaultRequestHeaders.Add(key, value);
