@@ -71,68 +71,71 @@ jobs:
         path: ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
 
   release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-    - name: Get latest version tag
-      id: get_tag
-      run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+  - name: Get latest version tag
+    id: get_tag
+    run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
-    - name: Download Linux x64 artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: linux_x64-release
+  - name: Download Linux x64 artifact
+    uses: actions/download-artifact@v3
+    with:
+      name: linux_x64-release
 
-    - name: Download macOS x64 artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: osx_x64-release
+  - name: Download macOS x64 artifact
+    uses: actions/download-artifact@v3
+    with:
+      name: osx_x64-release
 
-    - name: Download Windows x64 artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: win_x64-release
+  - name: Download Windows x64 artifact
+    uses: actions/download-artifact@v3
+    with:
+      name: win_x64-release
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.get_tag.outputs.tag }}
-        release_name: "Release ${{ steps.get_tag.outputs.tag }}"
-        draft: false
-        prerelease: false
+  - name: Create GitHub Release
+    id: create_release
+    uses: actions/create-release@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      tag_name: ${{ env.tag }}
+      release_name: "Release ${{ env.tag }}"
+      draft: false
+      prerelease: false
 
-    - name: Upload Release Asset (Linux x64)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: linux_x64.zip
-        asset_name: linux_x64.zip
-        asset_content_type: application/zip
+  - name: Upload Release Asset (Linux x64)
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: linux_x64.zip
+      asset_name: linux_x64.zip
+      asset_content_type: application/zip
 
-    - name: Upload Release Asset (macOS x64)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: osx_x64.zip
-        asset_name: osx_x64.zip
-        asset_content_type: application/zip
+  - name: Upload Release Asset (macOS x64)
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: osx_x64.zip
+      asset_name: osx_x64.zip
+      asset_content_type: application/zip
 
-    - name: Upload Release Asset (Windows x64)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+  - name: Upload Release Asset (Windows x64)
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: win_x64.zip
+      asset_name: win_x64.zip
+      asset_content_type: application/zip
         asset_path: win_x64.zip
         asset_name: win_x64.zip
         asset_content_type: application/zip
