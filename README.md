@@ -1,5 +1,12 @@
 # SteamC2Finder
 
+<a href="https://github.com/miltinhoc/SteamC2FinderCore/actions/workflows/dotnet-desktop.yml">
+    <img src="https://github.com/miltinhoc/SteamC2FinderCore/actions/workflows/dotnet-desktop.yml/badge.svg"
+        alt="">
+</a>
+<br>
+
+
 ## Overview
 **SteamC2Finder** is a tool designed to identify Steam profiles that include Command and Control (C2) server information within their profile names. It scans profiles for patterns that indicate potential C2 servers and exports the findings in MISP format.
 
