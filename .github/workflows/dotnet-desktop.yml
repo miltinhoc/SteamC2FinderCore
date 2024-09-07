@@ -55,7 +55,7 @@ jobs:
 
     - name: Create release package
       run: |
-        zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+        Compress-Archive -Path ./release -DestinationPath ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
       if: always()
 
     - name: Upload build artifact
