@@ -9,6 +9,10 @@ namespace SteamC2FinderCore
     {
         static async Task Main(string[] args)
         {
+            FileHelper.CreateFolder(Constants.MispFolder);
+            FileHelper.CreateFolder(Constants.C2Folder);
+            FileHelper.CreateFolder(Constants.SearchFolder);
+
             SteamService steamService = new();
 
             await steamService.InitializeSession();
@@ -20,14 +24,12 @@ namespace SteamC2FinderCore
             }
 
             Func<string, string> toIp = str => str.GetIpAddress();
-            
-            MISPService.CreateFolder();
 
             Root mispUrls = MISPService.ConvertToMisp(steamService.C2Servers, "url");
             Root mispIps = MISPService.ConvertToMisp(steamService.C2Servers, "ip-dst", transform: toIp);
 
-            FileHelper.SaveResults(Path.Combine(Constants.MispFolder, $"{mispUrls.Event?.Uuid}.json"), mispUrls);
-            FileHelper.SaveResults(Path.Combine(Constants.MispFolder, $"{mispIps.Event?.Uuid}.json"), mispIps);
+            FileHelper.SaveResults($"{mispUrls.Event?.Uuid}.json", Constants.MispFolder, mispUrls);
+            FileHelper.SaveResults($"{mispIps.Event?.Uuid}.json", Constants.MispFolder, mispIps);
         }
     }
 }

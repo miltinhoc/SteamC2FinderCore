@@ -39,12 +39,12 @@ namespace SteamC2FinderCore.Services
                 ProgressBarHelper.DisplayProgressBar(i, 255);
 
                 await SearchForUsers($"http://{i}.", _sessionId);
-                FileHelper.SaveResults($"search_history_{_initTimestamp}.json", _searchResults);
+                FileHelper.SaveResults($"search_history_{_initTimestamp}.json", Constants.SearchFolder, _searchResults);
             }
 
             Console.WriteLine("\n[*] Extracting c2 servers...");
             ExtractC2ServersFromNames();
-            FileHelper.SaveResults($"c2_servers_{_initTimestamp}.json", _c2Servers);
+            FileHelper.SaveResults($"c2_servers_{_initTimestamp}.json", Constants.C2Folder, _c2Servers);
         }
 
         private void ExtractC2ServersFromNames()

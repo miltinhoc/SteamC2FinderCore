@@ -5,14 +5,6 @@ namespace SteamC2FinderCore.Services
 {
     public class MISPService
     {
-        public static void CreateFolder()
-        {
-            if (!Directory.Exists(Constants.MispFolder))
-            {
-                Directory.CreateDirectory(Constants.MispFolder);
-            }
-        }
-
         public static Root ConvertToMisp(HashSet<string>? c2Servers, string type, Func<string, string>? transform = null)
         {
             string eventUuid = Guid.NewGuid().ToString();

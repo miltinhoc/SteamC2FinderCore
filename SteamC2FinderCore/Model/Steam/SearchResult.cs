@@ -4,6 +4,8 @@ namespace SteamC2FinderCore.Model.Steam
 {
     public class SearchResult
     {
+        public SearchResult() { }
+
         [JsonProperty("success")]
         public int Success { get; set; }
 
