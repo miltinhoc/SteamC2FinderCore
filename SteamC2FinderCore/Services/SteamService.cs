@@ -10,7 +10,7 @@ namespace SteamC2FinderCore.Services
         private readonly WebService _webService;
         private string? _sessionId;
 
-        private readonly HashSet<string>? _searchResults;
+        private readonly Dictionary<string, string>? _searchResults;
         private readonly HashSet<string>? _c2Servers;
         private readonly string _initTimestamp;
 
@@ -56,7 +56,7 @@ namespace SteamC2FinderCore.Services
 
             Regex regex = new(Constants.C2NamesPattern, RegexOptions.Compiled);
 
-            foreach (string profile in _searchResults)
+            foreach (string profile in _searchResults.Values)
             {
                 Match match = regex.Match(profile);
                 if (match.Success)
@@ -120,7 +120,7 @@ namespace SteamC2FinderCore.Services
 
         private void ParseAndStoreUserNames(string? htmlContent)
         {
-            if (string.IsNullOrEmpty(htmlContent))
+            if (string.IsNullOrEmpty(htmlContent) || _searchResults == null)
             {
                 return;
             }
@@ -129,7 +129,22 @@ namespace SteamC2FinderCore.Services
 
             foreach (Match match in matches)
             {
-                _searchResults?.Add(match.Groups[2].Value);
+                if (!match.Success)
+                    continue;
+
+                var steamId = match.Groups[1].Value.Split('/').LastOrDefault();
+
+                if (steamId == null)
+                {
+                    continue;
+                }
+
+                if (_searchResults!.ContainsKey(steamId))
+                {
+                    continue;
+                }
+
+                _searchResults?.Add(steamId, match.Groups[2].Value);
             }
         }
 
