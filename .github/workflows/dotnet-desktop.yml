@@ -53,16 +53,16 @@ jobs:
       #run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
       run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
 
-    - name: Create release package
+    - name: Create release package on Linux/macOS
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       run: |
-        if [[ $RUNNER_OS == 'Linux' ]]; then
-          zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
-        elif [[ $RUNNER_OS == 'macOS' ]]; then
-          zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
-        elif [[ $RUNNER_OS == 'Windows' ]]; then
-          powershell Compress-Archive -Path ./release -DestinationPath ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
-        fi
-      if: always()
+        zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+    
+    - name: Create release package on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Compress-Archive -Path ./release -DestinationPath ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v3
