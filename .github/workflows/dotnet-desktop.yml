@@ -50,9 +50,5 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish for ${{ matrix.OS_NAME }}
-      run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
-
-    - name: Create release package
-      run: |
-        zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
-      if: always()
+      #run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
+      run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
