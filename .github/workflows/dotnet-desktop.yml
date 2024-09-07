@@ -79,8 +79,11 @@ jobs:
   
     - name: Get latest version tag
       id: get_tag
-      run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-  
+      run: |
+        tag=$(git describe --tags --abbrev=0 || echo "v1.0.0")
+        echo "Latest tag: $tag"
+        echo "tag=$tag" >> $GITHUB_ENV
+    
     - name: Download Linux x64 artifact
       uses: actions/download-artifact@v3
       with:
