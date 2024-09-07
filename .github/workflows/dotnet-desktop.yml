@@ -50,8 +50,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish for ${{ matrix.OS_NAME }}
-      #run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
-      run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
+      run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release --publish-single-file
 
     - name: Create release package on Linux/macOS
       if: runner.os == 'Linux' || runner.os == 'macOS'
