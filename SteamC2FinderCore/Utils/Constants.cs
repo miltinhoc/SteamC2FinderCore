@@ -11,6 +11,6 @@ namespace SteamC2FinderCore.Utils
         public static readonly string C2Folder = "c2-lists";
         public static readonly string SearchFolder = "search-lists";
 
-        public static readonly string? ProgramPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static readonly string? ProgramPath = Path.GetDirectoryName(AppContext.BaseDirectory);
     }
 }
