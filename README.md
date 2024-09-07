@@ -30,7 +30,7 @@ dotnet build
 
 ### Step 4: Run the Project
 ```bash
-dotnet run --project SteamC2Finder/SteamC2Finder.csproj
+dotnet run --project SteamC2FinderCore/SteamC2FinderCore.csproj
 ```
 
 Make sure to pass the arguments needed.
