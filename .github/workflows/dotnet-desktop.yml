@@ -53,12 +53,15 @@ jobs:
       #run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
       run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
 
-    - name: Install zip
-      run: choco install zip
-      
     - name: Create release package
       run: |
-        zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+        if [[ $RUNNER_OS == 'Linux' ]]; then
+          zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+        elif [[ $RUNNER_OS == 'macOS' ]]; then
+          zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+        elif [[ $RUNNER_OS == 'Windows' ]]; then
+          powershell Compress-Archive -Path ./release -DestinationPath ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
+        fi
       if: always()
 
     - name: Upload build artifact
