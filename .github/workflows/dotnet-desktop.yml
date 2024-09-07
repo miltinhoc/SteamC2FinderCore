@@ -52,3 +52,81 @@ jobs:
     - name: Publish for ${{ matrix.OS_NAME }}
       #run: dotnet publish --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
       run: dotnet publish ./SteamC2FinderCore/SteamC2FinderCore.csproj --configuration Release --runtime ${{ matrix.DOTNET_RUNTIME_IDENTIFIER }} --self-contained --output ./release
+
+    - name: Create release package
+      run: |
+        zip -r ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip ./release
+      if: always()
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.RELEASE_ZIP_OS_NAME }}-release
+        path: ${{ matrix.RELEASE_ZIP_OS_NAME }}.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get latest version tag
+      id: get_tag
+      run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+
+    - name: Download Linux x64 artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: linux_x64-release
+
+    - name: Download macOS x64 artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: osx_x64-release
+
+    - name: Download Windows x64 artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: win_x64-release
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_tag.outputs.tag }}
+        release_name: "Release ${{ steps.get_tag.outputs.tag }}"
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset (Linux x64)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux_x64.zip
+        asset_name: linux_x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset (macOS x64)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: osx_x64.zip
+        asset_name: osx_x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset (Windows x64)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: win_x64.zip
+        asset_name: win_x64.zip
+        asset_content_type: application/zip
