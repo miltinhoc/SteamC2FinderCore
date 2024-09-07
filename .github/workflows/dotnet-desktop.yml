@@ -79,7 +79,7 @@ jobs:
     - name: Get latest version tag
       id: get_tag
       run: |
-        tag=$(git describe --tags --abbrev=0 || echo "v1.0.0")
+        tag=$(cat VERSION.txt)
         echo "Latest tag: $tag"
         echo "tag=$tag" >> $GITHUB_ENV
     
